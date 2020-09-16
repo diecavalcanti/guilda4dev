@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
 import ArrowBack from '../../assets/images/icons/ArrowBack';
@@ -12,6 +12,14 @@ const Following = () => {
     history.push('/');
   }
 
+  const [following, setFollowing] = useState([{
+    id: 1,
+    idProfile: 1,
+    name: 'Chevette',
+    account: '@chevette',
+    bio: 'tectectectec',
+  }]);
+
   return (
     <DefaultPage id="following">
       <PageHeader
@@ -23,6 +31,32 @@ const Following = () => {
           </>
         )}
       />
+      <div>
+        {following.map((follow) => (
+          <p>{follow.name}</p>
+        ))}
+      </div>
+      <button onClick={() => {
+        setFollowing([...following,
+          {
+            id: 1,
+            idProfile: 1,
+            name: 'Chevette',
+            account: '@chevette',
+            bio: 'tectectectec',
+          },
+          {
+            id: 2,
+            idProfile: 1,
+            name: 'Pabllo Vittar',
+            account: '@pabllo',
+            bio: 'Eu mesma',
+          },
+        ]);
+      }}
+      >
+        OK
+      </button>
     </DefaultPage>
   );
 };
