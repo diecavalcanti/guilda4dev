@@ -1,24 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
 import ArrowBack from '../../assets/images/icons/ArrowBack';
 import DefaultPage from '../../components/DefaultPage';
+import followingRepositories from '../../repositories/following';
+import Loader from '../../components/Loader';
 import './styles.css';
 
 const Following = () => {
   const history = useHistory();
+  const [following, setFollowing] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [ok, setOk] = useState();
 
   function backPage() {
     history.push('/');
   }
 
-  const [following, setFollowing] = useState([{
-    id: 1,
-    idProfile: 1,
-    name: 'Chevette',
-    account: '@chevette',
-    bio: 'tectectectec',
-  }]);
+  function load() {
+    return (
+      <div className="loader-wrapper">
+        <Loader />
+      </div>
+    );
+  }
+
+  function content() {
+    return (
+      <div>
+        {following.map((follow) => (
+          <p>{follow.name}</p>
+        ))}
+      </div>
+    );
+  }
+
+  useEffect(() => {
+    setLoading(true);
+
+    followingRepositories.getByIdProfile(1).then((dados) => {
+      setFollowing(dados);
+    });
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, [ok]);
 
   return (
     <DefaultPage id="following">
@@ -31,32 +58,8 @@ const Following = () => {
           </>
         )}
       />
-      <div>
-        {following.map((follow) => (
-          <p>{follow.name}</p>
-        ))}
-      </div>
-      <button onClick={() => {
-        setFollowing([...following,
-          {
-            id: 1,
-            idProfile: 1,
-            name: 'Chevette',
-            account: '@chevette',
-            bio: 'tectectectec',
-          },
-          {
-            id: 2,
-            idProfile: 1,
-            name: 'Pabllo Vittar',
-            account: '@pabllo',
-            bio: 'Eu mesma',
-          },
-        ]);
-      }}
-      >
-        OK
-      </button>
+      <button onClick={() => { setOk(!ok); }}>Ok</button>
+      {loading ? load() : content() }
     </DefaultPage>
   );
 };
